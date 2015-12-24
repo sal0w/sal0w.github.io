@@ -585,7 +585,7 @@
 				letter-spacing: -0.025em;
 				border: 0;
 			}
-			#header h1 img{
+			#header h1 a img{
 				height: 3em;
    				 width: auto;
 			}

@@ -38,6 +38,7 @@
 					position: 'top-left',
 					side: 'top',
 					width: '100%'
+					
 				}
 			}
 		}
