@@ -1,11 +1,144 @@
-<h3 id="dolor-sit-amet">Dolor sit amet?</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vestibulum non mi non pulvinar. Donec tempus risus vel ex fringilla tempor. Vivamus pharetra non mauris quis fermentum. Vestibulum sed maximus elit, sit amet suscipit orci. Morbi at enim at libero dignissim egestas vel ac nisi. Etiam at lectus a arcu sodales consequat. Aliquam consequat ligula sed purus tincidunt, a ultrices nibh dapibus. Phasellus convallis ipsum nec semper ultricies. In facilisis lacus velit, sit amet lacinia velit blandit id. Nullam ut magna erat. Aliquam sit amet dapibus odio, aliquet tempus tortor. Donec in nisi massa.</p>
+<h3 id="timer-periodic-mode---srf04">Timer Periodic Mode - SRF04</h3>
+<p>he SRF04 requires 1 digital output and a input ready to read a positive pulse length. In this example it will be used a digital input to start a timer so it’s possible to read the pulse length in any pin.
+    The timer will be in periodic mode. There are better modes for this but this method will let you use the SRF04 in any GPIO. It should work with clones, just adapt the math if needed.</p>
 
-<h3 id="aliquam-suscipit">Aliquam suscipit.</h3>
-<p>Cras eget nisl accumsan, porta nisl in, egestas sapien. Vestibulum gravida nulla sed facilisis tempor. Suspendisse maximus nisi sit amet velit sodales fringilla. Vivamus luctus risus eget dui consectetur porttitor. Maecenas ut ultrices orci. Maecenas mollis est eu sodales mollis. Nulla facilisi. Suspendisse eros arcu, elementum sed sem eu, pharetra rhoncus odio. Proin nec tincidunt velit. Cras nisl augue, faucibus sed mauris in, vestibulum mollis nisl. Nam id libero ultrices, consequat ex vitae, convallis nulla.</p>
+<h3 id="code">code.</h3>
 
-<p>Suspendisse lorem odio, blandit at nisl quis, hendrerit tempus tellus. Donec eget leo quis nisi vulputate consectetur. Praesent dignissim enim elit, congue luctus nisl cursus at. Sed rutrum molestie risus. Donec vulputate gravida accumsan. Vivamus tempus ullamcorper eleifend. Sed sagittis mi ut dolor tincidunt, ac rutrum nisi commodo.</p>
+<p>void inputInt();
+void Captureinit();
+void InitConsole(void);</p>
 
-<p>Fusce non elit in diam rutrum vestibulum. Donec vitae elementum erat. Praesent elementum eget justo at bibendum. Fusce interdum diam lorem, ut placerat elit pretium quis. Quisque eu urna at quam commodo sagittis. Etiam posuere convallis tincidunt. Phasellus vitae ligula neque. Vivamus a purus at dolor iaculis placerat. Curabitur convallis eu lacus congue sagittis.</p>
+<p>//This is to avoid doing the math everytime you do a reading
+const double temp = 1.0/80.0;</p>
 
-<p>Aliquam suscipit fermentum mauris a accumsan. In facilisis, mauris quis pulvinar tempus, turpis sapien sodales nibh, nec feugiat augue est quis nisi. Fusce eget odio feugiat, luctus quam et, dapibus nulla. Sed ornare lacus non libero lacinia pretium. In eu dui vitae purus euismod feugiat ac ac est. Morbi vitae pretium lorem, non eleifend felis. Nullam at massa feugiat, rutrum elit at, semper lacus. Etiam vel rutrum felis. Nullam quis auctor lorem, et tempor arcu.</p>
+<p>//Stores the pulse length
+volatile uint32_t pulse=0;</p>
+
+<p>//Tells the main code if the a pulse is being read at the moment
+volatile uint8_t echowait=0;</p>
+
+<p>int main()
+{
+ //Set system clock to 80Mhz
+  SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|
+	SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);</p>
+
+<p>//Configures the UART
+  InitConsole();</p>
+
+<p>//Configures the timer
+  Captureinit();</p>
+
+<p>//Configure Trigger pin
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+  SysCtlDelay(3);
+  GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_3);</p>
+
+<p>//Configure Echo pin
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+  SysCtlDelay(3);
+  GPIOPinTypeGPIOInput(GPIO_PORTA_BASE, GPIO_PIN_2);
+  GPIOIntEnable(GPIO_PORTA_BASE, GPIO_PIN_2);
+  GPIOIntTypeSet(GPIO_PORTA_BASE, GPIO_PIN_2,GPIO_BOTH_EDGES);
+  GPIOIntRegister(GPIO_PORTA_BASE,inputInt);</p>
+
+<p>while(1)
+  {</p>
+
+<pre><code>//Checks if a pulse read is in progress
+if(echowait != 1){
+  //Does the required pulse of 10uS
+  GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_3, GPIO_PIN_3);
+  SysCtlDelay(266);
+  GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_3, ~GPIO_PIN_3);
+
+  
+  while(echowait != 0);
+
+  //Converts the counter value to cm.
+  pulse =(uint32_t)(temp * pulse);
+  pulse = pulse / 58;
+
+  //Prints out the distance measured.
+  UARTprintf("distance = %2dcm \n" , pulse);
+}
+  //wait about 10ms until the next reading.
+  SysCtlDelay(400000);
+</code></pre>
+
+<p>}
+}
+void inputInt(){
+  //Clear interrupt flag. Since we only enabled on this is enough
+  GPIOIntClear(GPIO_PORTA_BASE, GPIO_PIN_2);</p>
+
+<p>/*
+    If it’s a rising edge then set he timer to 0
+    It’s in periodic mode so it was in some random value
+  <em>/
+  if ( GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_2) == GPIO_PIN_2){
+	HWREG(TIMER2_BASE + TIMER_O_TAV) = 0; //Loads value 0 into the timer.
+    TimerEnable(TIMER2_BASE,TIMER_A);
+    echowait=1;
+  }
+  /</em>
+    If it’s a falling edge that was detected, then get the value of the counter
+  */
+  else{
+    pulse = TimerValueGet(TIMER2_BASE,TIMER_A); //record value
+    TimerDisable(TIMER2_BASE,TIMER_A);
+    echowait=0;
+  }</p>
+
+<p>}
+void Captureinit(){
+  /*
+    Set the timer to be periodic.
+  */
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER2);
+  SysCtlDelay(3);
+  TimerConfigure(TIMER2_BASE, TIMER_CFG_PERIODIC_UP);
+  TimerEnable(TIMER2_BASE,TIMER_A);
+}</p>
+
+<p>void InitConsole(void)
+{
+    //
+    // Enable GPIO port A which is used for UART0 pins.
+    // TODO: change this to whichever GPIO port you are using.
+    //
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    SysCtlDelay(3);</p>
+
+<pre><code>//
+// Configure the pin muxing for UART0 functions on port A0 and A1.
+// This step is not necessary if your part does not support pin muxing.
+// TODO: change this to select the port/pin you are using.
+//
+GPIOPinConfigure(GPIO_PA0_U0RX);
+GPIOPinConfigure(GPIO_PA1_U0TX);
+
+//
+// Enable UART0 so that we can configure the clock.
+//
+SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+
+//
+// Use the internal 16MHz oscillator as the UART clock source.
+//
+UARTClockSourceSet(UART0_BASE, UART_CLOCK_PIOSC);
+
+//
+// Select the alternate (UART) function for these pins.
+// TODO: change this to select the port/pin you are using.
+//
+GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+
+//
+// Initialize the UART for console I/O.
+//
+UARTStdioConfig(0, 115200, 16000000);
+</code></pre>
+
+<p>}</p>
+
