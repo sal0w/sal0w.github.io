@@ -3,7 +3,7 @@ title:  "Ov7670"
 subtitle: "CMOS camera"
 author: "Akash Salow"
 avatar: "img/authors/salow.jpg"
-image: "img/five.jpg"
+image: "img/foe.jpg"
 date:   2015-04-22 12:12:12
 ---
 
