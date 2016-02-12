@@ -3,7 +3,7 @@ title:  "Ultra sonic sensor."
 subtitle: "Calculate ."
 author: "Akash Salow"
 avatar: "img/authors/salow.jpg"
-image: "img/srf04.jpg"
+image: "img/sr045.jpg"
 date:   2015-04-21 12:12:12
 ---
 
