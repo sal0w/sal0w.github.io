@@ -31,9 +31,9 @@ layout: compress
                 <h1><a id="logo"><img src="/img/icon.png" alt="" />Salow.co<span>Get to know About me.</span></h1>
                 <nav class="links">
                     <a href="https://twitter.com/salow___"><i class="fa fa-twitter-square fa-3x"></i></a>
-                    <a href="#"><i class="fa fa-instagram fa-3x"></i></a>
+                    <a href="https://github.com/sal0w"><i class="fa fa-github-square fa-3x"></i></a>
                     <a href="https://www.facebook.com/akash.salow"><i class="fa fa-facebook-square fa-3x"></i></a>
-                    <a href="https://www.tumblr.com/blog/salowakash"><i class="fa fa-tumblr-square fa-3x"></i></a>
+                    <a href="https://www.linkedin.com/in/akash-salow-36127a57"><i class="fa fa-tumblr-square fa-3x"></i></a>
                 </nav>
             </header>
             <div class="content">

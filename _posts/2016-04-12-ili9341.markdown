@@ -1,0 +1,15 @@
+---
+title:  "IlI9341 for cc3200"
+subtitle: "TFT LCD display "
+author: "Akash Salow"
+avatar: "img/authors/salow.jpg"
+image: "img/tftDisplay.jpg"
+date:   2016-04-12 12:12:12
+---
+
+### TFT Display
+
+  When I started coding in code composer studio for texas Instruments CC3200 launchpad kit I was not able to find any driver written for the cheap display such as the ili9341 which is about $15 so I read a lot of forum to write the code. At first I gave the gave the lcd with the data pins which gave 5v it didnot work when I read the data sheet I found that the ili9341/ 9340 works with 3.3v so I bought the level convertors to step down the voltage and the it worked. It works with the grlib for stellaries processors so download grlib for stellaries and in your project properties link your grlib library. The code can be fount in my github.
+
+
+
