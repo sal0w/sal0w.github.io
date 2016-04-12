@@ -1,7 +1,7 @@
 # Site settings
-title: Modern Blog
-description: Modern-Blog A Elegant template for Jekyll
-keywords: Modern, Blogging, Fun
-author: Wferr
+title: salow.co
+description: Android application developer, Embedded feak,Iot geek.
+keywords: Android, clash of clans,Modern, Blogging, Fun
+author: Salow
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "" # the base hostname & protocol for your site
+url: "www.salow.co" # the base hostname & protocol for your site

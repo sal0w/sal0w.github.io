@@ -1,7 +1,7 @@
 # Site settings
 title: salow.co
 description: Android application developer, Embedded feak,Iot geek.
-keywords: Android, clash of clans,Modern, Blogging, Fun
+keywords: Android, clash of clans,Modern, Blogging, Fun, ili9341,ili9340, code composer studio, cc3200,CC3200, embedded, arm cortex M4
 author: Salow
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "www.salow.co" # the base hostname & protocol for your site
