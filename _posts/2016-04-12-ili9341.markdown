@@ -3,7 +3,7 @@ title:  "IlI9341 for cc3200"
 subtitle: "TFT LCD display "
 author: "Akash Salow"
 avatar: "img/authors/salow.jpg"
-image: "img/tftDisplay.jpg"
+image: "img/tftDisplayy.jpg"
 date:   2016-04-12 12:12:12
 ---
 
